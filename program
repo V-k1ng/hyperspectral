@@ -1,0 +1,39 @@
+import cv2
+import os
+import matplotlib.pyplot as plt
+
+# Загрузка гиперспектрального изображения
+hdr_image = cv2.imread('041602_2-20x-roi1.hdr', cv2.IMREAD_UNCHANGED)
+
+# Отображение изображения с использованием Matplotlib
+plt.figure(figsize=(50, 50))
+
+# Переворачиваем изображение, так как Matplotlib ожидает цветные изображения в формате RGB
+rgb_image = cv2.cvtColor(hdr_image, cv2.COLOR_BGR2RGB)
+
+# Выводим изображение
+plt.imshow(rgb_image)
+plt.axis('off')  # Отключаем оси координат
+plt.show()
+
+def save_channels(hdr_image, output_dir):
+    # Разделение каналов (слоев)
+    channels = cv2.split(hdr_image)
+
+    # Создание папки для сохранения слоев, если она не существует
+    os.makedirs(output_dir, exist_ok=True)
+
+    # Пример сохранения каждого канала в отдельный файл
+    for i, channel in enumerate(channels):
+        output_path = os.path.join(output_dir, f'channel_{i}.png')
+        cv2.imwrite(output_path, channel)
+        print(f'Слой {i} сохранен в: {output_path}')
+
+# Загрузка гиперспектрального изображения
+hdr_image = cv2.imread('041602_2-20x-roi1.hdr', cv2.IMREAD_UNCHANGED)
+
+# Указание папки для сохранения слоев
+output_dir = 'output_layers'
+
+# Вызов функции для сохранения слоев
+save_channels(hdr_image, output_dir)
